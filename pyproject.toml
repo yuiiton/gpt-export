@@ -1,0 +1,21 @@
+[project]
+name = "gpt-export"
+version = "0.1.0"
+description = "CLI para exportar conversas do ChatGPT para formatos locais."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [
+    { name = "Hebert Ruan" }
+]
+dependencies = [
+    "requests",
+    "python-dotenv",
+    "typer",
+]
+
+[project.scripts]
+gpt-export = "gpt_export.cli:app"
+
+[tool.setuptools.packages.find]
+include = ["gpt_export*"]
