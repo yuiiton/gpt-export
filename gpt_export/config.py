@@ -13,7 +13,7 @@ JSON_ARCHIVES_DIR = ARCHIVES_DIR / "json"
 TEXT_ARCHIVES_DIR = ARCHIVES_DIR / "txt"
 
 
-load_dotenv(ENV_FILE)
+load_dotenv(ENV_FILE, override=True)
 
 
 def get_base_url() -> str:
