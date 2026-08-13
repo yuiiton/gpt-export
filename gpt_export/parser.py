@@ -1,4 +1,4 @@
-from config import get_author
+from .config import get_author
 
 def build_message_chain(data: dict) -> list[dict]:
     mapping = data["mapping"]

@@ -2,10 +2,10 @@ from pathlib import Path
 
 import typer
 
-from config import get_account_id, get_cookies, get_token
-from core import convert_to_txt, download_conversation
-from utils import parse_cookie_string
-from config import save_config, ENV_FILE, JSON_ARCHIVES_DIR, TEXT_ARCHIVES_DIR
+from .config import get_account_id, get_cookies, get_token
+from .core import convert_to_txt, download_conversation
+from .utils import parse_cookie_string
+from .config import save_config, ENV_FILE, JSON_ARCHIVES_DIR, TEXT_ARCHIVES_DIR
 
 
 app = typer.Typer()

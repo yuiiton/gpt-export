@@ -1,8 +1,8 @@
-from client import get_conversation
-from exporters.txt import export_txt
-from parser import parse_conversation
-from utils import load_json, save_json
-from config import JSON_ARCHIVES_DIR, TEXT_ARCHIVES_DIR
+from .client import get_conversation
+from .exporters.txt import export_txt
+from .parser import parse_conversation
+from .utils import load_json, save_json
+from .config import JSON_ARCHIVES_DIR, TEXT_ARCHIVES_DIR
 
 
 def download_conversation(

@@ -1,6 +1,6 @@
 import requests
 
-from config import get_base_url, get_headers
+from .config import get_base_url, get_headers
 
 
 BASE_URL = get_base_url()
