@@ -14,7 +14,7 @@ CLI
  │      ▼
  │    Client
  │      │
-python main.py download --conversation-id <conversation-id> --output conversa.json
+ │      ▼
  │  ChatGPT Backend API
  │      │
  │      ▼
@@ -51,21 +51,14 @@ gpt-export/
 │   │── txt/
 ├── .env.example
 ├── .gitignore
-├── main.py
 └── pyproject.toml
 ```
 
 ## Componentes
 
-### `main.py`
-
-Ponto de entrada da aplicação.
-
-Sua responsabilidade é iniciar a CLI disponibilizada pelo pacote `gpt_export`.
-
 ### `cli.py`
 
-Responsável pela interface de linha de comando.
+Responsável pela interface de linha de comando e ponto de entrada da aplicaçãp.
 
 Cuida de:
 
@@ -128,7 +121,7 @@ exporters/
 
 Novos formatos podem ser adicionados sem modificar a lógica responsável pelo download.
 
-### exports
+### `exports/`
 
 Contém os arquivos de conversas baixados pela CLI.
 
@@ -137,7 +130,7 @@ Contém os arquivos de conversas baixados pela CLI.
 Quando o usuário executa:
 
 ```bash
-python main.py download --conversation-id <conversation-id> --output conversa.json
+gpt-export download --conversation-id <conversation-id> --output conversa.json
 ```
 
 o fluxo é:
@@ -175,7 +168,7 @@ Arquivo JSON
 A exportação ocorre de forma independente do download:
 
 ```bash
-python main.py txt \
+gpt-export txt \
     --input-file conversa.json \
     --output conversa.txt
 ```
@@ -200,19 +193,10 @@ Arquivo TXT
 
 Essa separação permite que uma conversa seja baixada apenas uma vez e posteriormente convertida para diferentes formatos.
 
-Nota sobre caminhos de saída
-
-Agora os arquivos exportados são gravados em diretórios padrão para facilitar organização. Ao usar as opções de saída da CLI, passe somente o nome do arquivo (por exemplo `minha-conversa.json` ou `minha-conversa.txt`). O programa irá salvar os arquivos nos diretórios padrão, por exemplo:
+Os arquivos exportados são gravados em diretórios padrão para facilitar organização. Ao usar as opções de saída da CLI, passe somente o nome do arquivo (por exemplo `minha-conversa.json` ou `minha-conversa.txt`). O programa irá salvar os arquivos nos diretórios padrão, por exemplo:
 
 - JSON: `./exports/json/{nome}`
 - TXT: `./exports/txt/{nome}`
-
-Exemplo de uso (o `--output` recebe apenas o nome; o caminho final é construído automaticamente):
-
-```bash
-python main.py download 6a283d48-7d78-83e9-9038-675f1b3d16f3 --output conversa.json
-python main.py txt --input-file conversa.json --output conversa.txt
-```
 
 ## Princípios arquiteturais
 

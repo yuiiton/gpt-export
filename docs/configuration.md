@@ -58,7 +58,7 @@ O `gpt-export` possui um comando interativo para configurar o arquivo `.env`.
 Execute:
 
 ```bash
-python main.py setup
+gpt-export setup
 ```
 
 O comando solicitará as informações necessárias:

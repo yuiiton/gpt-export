@@ -1,73 +1,55 @@
-# Configuração
+# Execução do projeto
 
-Este documento descreve como obter as credenciais necessárias para utilizar o `gpt-export` e como configurar o projeto.
+Este documento mostra como o projeto é executado na prática.
 
-## Obtendo as credenciais
+O fluxo do `gpt-export` é simples:
 
-As informações necessárias podem ser obtidas através das ferramentas de desenvolvedor do navegador.
-
-1. Acesse o ChatGPT e faça login.
-2. Abra as ferramentas de desenvolvedor do navegador (`F12`).
-3. Acesse a aba **Network**.
-4. Recarregue a página.
-5. Localize uma requisição para o domínio `chatgpt.com`.
-6. Procure uma requisição relacionada ao carregamento de uma conversa, semelhante a ´´conversation/<conversation-id></conversation>´´
-
-### `GPT_TOKEN`
-
-Na requisição, procure pelo cabeçalho:
-
-```text
-Authorization: Bearer <token>
-```
-
-O valor utilizado em `GPT_TOKEN` é o token depois de `Bearer`.
-
-Por exemplo:
-
-```env
-GPT_TOKEN=eyJ...
-```
-
-### `GPT_ACCOUNT_ID`
-
-O `GPT_ACCOUNT_ID` corresponde ao ID da conta utilizada na sessão do ChatGPT.
-
-Ele possui um formato semelhante a:
-
-```text
-c6e2c585-463e-408d-92e0-f6009a54e36e
-```
-
-### `GPT_COOKIES`
-
-Na mesma requisição, procure pelo cabeçalho:
-
-```text
-Cookie
-```
-
-Copie o valor completo desse cabeçalho.
-
-Esse valor será utilizado como `GPT_COOKIES`.
-
-> Dependendo do navegador e da versão do ChatGPT, as informações presentes na requisição podem variar.
+1. preparar o ambiente Python;
+2. configurar o arquivo `.env` com as credenciais;
+3. baixar uma conversa com o comando `download`;
+4. converter o JSON resultante para TXT com o comando `txt`.
 
 ---
 
-## Configuração utilizando o `setup`
+## 1. Pré-requisitos
 
-O `gpt-export` possui um comando interativo para facilitar a configuração inicial.
+Antes de rodar o projeto, certifique-se de que você tenha:
 
-Com o ambiente virtual ativado, execute:
+- Python 3.13 ou superior;
+- acesso ao ChatGPT em uma sessão autenticada;
+- as credenciais necessárias armazenadas em `.env`.
+
+> Se você ainda não configurou as credenciais, leia primeiro [configuration.md](configuration.md). Esse arquivo explica como obter `GPT_TOKEN`, `GPT_ACCOUNT_ID` e `GPT_COOKIES`.
+
+---
+
+## 2. Instalar as dependências
+
+Na raiz do projeto, crie um ambiente virtual e instale as dependências:
 
 ```bash
-python main.py setup
+cd gpt-export
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e .
 ```
 
-O programa solicitará as informações necessárias e criará ou atualizará o arquivo `.env` automaticamente.
+Depois disso, o comando `gpt-export` estará disponível no terminal.
 
-Ao final, o arquivo deverá possuir uma estrutura semelhante a:
+---
+
+## 3. Configurar o projeto
+
+O ponto de entrada da aplicação é o comando:
+
+```bash
+gpt-export setup
+```
+
+Esse comando pede os dados visíveis na sessão do usuário e salva as informações em um arquivo `.env` na raiz do projeto.
+
+A estrutura esperada é semelhante a:
 
 ```env
 AUTHOR=Seu Nome
@@ -76,108 +58,152 @@ GPT_ACCOUNT_ID=...
 GPT_COOKIES=...
 ```
 
-Os valores de `GPT_TOKEN`, `GPT_ACCOUNT_ID` e `GPT_COOKIES` devem ser obtidos conforme descrito na seção [Obtendo as credenciais](#obtendo-as-credenciais).
+Se preferir, você pode criar o arquivo manualmente. O processo completo está em [configuration.md](configuration.md).
 
 ---
 
-## Configuração manual
+## 4. Verificar os comandos disponíveis
 
-Também é possível configurar o projeto manualmente através do arquivo `.env`.
+Para visualizar a CLI e os comandos disponíveis, execute:
 
-Na raiz do projeto, crie um arquivo chamado:
+```bash
+gpt-export --help
+```
+
+Você deve ver comandos como:
+
+- `setup`
+- `download`
+- `txt`
+
+---
+
+## 5. Baixar uma conversa
+
+O comando principal para obter uma conversa do ChatGPT é:
+
+```bash
+gpt-export download --conversation-id <conversation-id> --output conversa.json
+```
+
+### Como funciona
+
+- `--conversation-id` recebe o identificador da conversa;
+- `--output` recebe apenas o nome do arquivo;
+- o programa salva automaticamente em `./exports/json/`.
+
+Exemplo:
+
+```bash
+gpt-export download --conversation-id 6a283d48-7d78-83e9-9038-675f1b3d16f3 --output teste.json
+```
+
+O arquivo gerado ficará em algo como:
 
 ```text
-.env
+./exports/json/teste.json
 ```
 
-Caso exista um arquivo `.env.example`, ele pode ser utilizado como base:
-
-```bash
-cp .env.example .env
-```
-
-Depois, preencha as variáveis necessárias:
-
-```env
-AUTHOR=Seu Nome
-GPT_TOKEN=seu_token
-GPT_ACCOUNT_ID=seu_account_id
-GPT_COOKIES=seus_cookies
-```
-
-### `AUTHOR`
-
-Nome do autor utilizado pelo projeto:
-
-```env
-AUTHOR=Seu Nome
-```
-
-### `GPT_TOKEN`
-
-Token de autenticação obtido conforme descrito na seção [Obtendo as credenciais](#obtendo-as-credenciais):
-
-```env
-GPT_TOKEN=eyJ...
-```
-
-### `GPT_ACCOUNT_ID`
-
-ID da conta utilizada na sessão do ChatGPT:
-
-```env
-GPT_ACCOUNT_ID=c6e2c585-463e-408d-92e0-f6009a54e36e
-```
-
-### `GPT_COOKIES`
-
-Cookies da sessão autenticada:
-
-```env
-GPT_COOKIES=oai-did=...; oai-hlib=true; ...
-```
-
-> O valor de `GPT_COOKIES` deve ser mantido em uma única linha.
+Essa etapa é o download bruto da conversa em JSON. Em outras palavras, ela pega o conteúdo da sessão do ChatGPT e salva localmente para que você possa processar a informação depois.
 
 ---
 
-## Testando a configuração
+## 6. Converter o JSON para TXT
 
-Depois de configurar o arquivo `.env`, utilize uma conversa para testar a autenticação:
+Depois de baixar a conversa, você pode exportá-la para um texto legível:
 
 ```bash
-# Observe: o `--output` aceita apenas o nome do arquivo. O programa salva o JSON no diretório padrão de JSONs.
-python main.py download --conversation-id <conversation-id> --output teste.json
+gpt-export txt --input-file conversa.json --output conversa.txt
 ```
 
-Se as credenciais estiverem válidas, a conversa será salva no diretório padrão (por exemplo `./exports/json/`) com o nome indicado.
+### Como funciona
 
-Por exemplo:
+- `--input-file` aponta para o nome do arquivo JSON dentro de `./exports/json/`;
+- `--output` recebe apenas o nome do arquivo TXT;
+- o programa salva automaticamente em `./exports/txt/`.
+
+Exemplo:
 
 ```bash
-python main.py download 6a283d48-7d78-83e9-9038-675f1b3d16f3 --output teste.json
+gpt-export txt --input-file teste.json --output teste.txt
+```
+
+O resultado ficará em:
+
+```text
+./exports/txt/teste.txt
+```
+
+Esse arquivo é útil para buscas locais, arquivamento e leitura mais simples em editores ou terminal.
+
+---
+
+## 7. Fluxo completo de uso
+
+Um fluxo típico do projeto é este:
+
+```bash
+gpt-export setup
+
+gpt-export download --conversation-id <conversation-id> --output minha-conversa.json
+
+gpt-export txt --input-file minha-conversa.json --output minha-conversa.txt
+```
+
+### Observações importantes
+
+- os comandos `--output` e `--input-file` recebem apenas nomes de arquivo, não caminhos completos;
+- os diretórios de saída são gerenciados automaticamente pela aplicação;
+- a parte de autenticação e obtenção de credenciais está detalhada em [configuration.md](configuration.md);
+- a parte de arquitetura do projeto está em [architecture.md](architecture.md).
+
+---
+
+## 8. Onde os arquivos são salvos
+
+A aplicação organiza a saída em pastas padrão:
+
+```text
+./exports/json/
+./exports/txt/
+```
+
+Assim, um fluxo normal gera algo como:
+
+```text
+exports/
+├── json/
+│   └── minha-conversa.json
+└── txt/
+    └── minha-conversa.txt
 ```
 
 ---
 
-## Segurança
+## 9. Quando usar cada comando
 
-As variáveis `GPT_TOKEN`, `GPT_ACCOUNT_ID` e `GPT_COOKIES` contêm informações relacionadas à autenticação da sessão.
+### `setup`
 
-**Nunca:**
+Use quando estiver configurando o projeto pela primeira vez ou quando precisar atualizar as credenciais.
 
-- publique o arquivo `.env`;
-- compartilhe suas credenciais;
-- coloque credenciais diretamente no código;
-- adicione o `.env` ao Git;
-- inclua credenciais reais em exemplos ou screenshots.
+### `download`
 
-Certifique-se de que o arquivo `.env` esteja presente no `.gitignore`:
+Use quando quiser pegar uma conversa específica do ChatGPT e salvar como JSON local.
 
-```gitignore
-.env
-```
+### `txt`
 
-Caso alguma credencial seja exposta, encerre ou invalide a sessão correspondente e obtenha novas credenciais.
+Use quando quiser transformar o JSON em um texto legível para consulta, busca ou arquivamento.
 
-> O `gpt-export` utiliza endpoints internos do ChatGPT. Esses endpoints não constituem uma API pública estável e podem sofrer alterações que façam com que o projeto deixe de funcionar ou exija mudanças futuras.
+---
+
+## 10. Segurança
+
+As credenciais do projeto são sensíveis e devem ficar apenas no arquivo `.env`.
+
+Nunca:
+
+- compartilhe o `.env` publicamente;
+- adicione credenciais em código-fonte;
+- publique screenshots com tokens ou cookies reais.
+
+Se precisar revisar a parte de configuração em detalhes, consulte [configuration.md](configuration.md).
