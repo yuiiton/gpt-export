@@ -103,19 +103,19 @@ Para mais informações sobre como obter essas credenciais, consulte a documenta
 
 ### Configuração inicial
 
-<!-- Adicione aqui uma captura de tela do comando `gpt-export setup` -->
+![Configuração inicial](docs/images/setup.png)
 
 <br>
 
 ### Exportando uma conversa
 
-<!-- Adicione aqui uma captura de tela do CLI exportando uma conversa -->
+![Exportando uma conversa](docs/images/download.png)
 
 <br>
 
 ### Arquivo TXT gerado
 
-<!-- Adicione aqui uma captura de tela do arquivo TXT -->
+![Arquivo txt gerado](docs/images/text_archive.png)
 
 ---
 
